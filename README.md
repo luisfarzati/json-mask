@@ -1,4 +1,5 @@
-# JSON Spawn
+# JSON Spawn [![NPM version](https://badge.fury.io/js/json-spawn.png)](http://badge.fury.io/js/json-spawn)
+[![Build Status](https://secure.travis-ci.org/luisfarzati/json-spawn.png)](http://travis-ci.org/luisfarzati/json-spawn) [![Dependency Status](https://gemnasium.com/luisfarzati/json-spawn.svg)](https://gemnasium.com/luisfarzati/json-spawn)
 
 Create JSON objects using the [Partial Response](https://developers.google.com/+/web/api/rest/#partial-responses) query language.
 
