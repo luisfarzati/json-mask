@@ -1,177 +1,137 @@
-# JSON Mask [![Build Status](https://secure.travis-ci.org/nemtsov/json-mask.png)](http://travis-ci.org/nemtsov/json-mask) [![NPM version](https://badge.fury.io/js/json-mask.png)](http://badge.fury.io/js/json-mask)
+# JSON Spawn
 
-<img src="https://raw.github.com/nemtsov/json-mask/master/logo.png" align="right" width="267px" />
-
-This is a tiny language and an engine for selecting specific parts of a JS object, hiding/masking the rest.
+Create JSON objects using the [Partial Response](https://developers.google.com/+/web/api/rest/#partial-responses) query language.
 
 ```js
-var mask = require('json-mask')
-mask({p: {a: 1, b: 2}, z: 1}, 'p/a,z')  // {p: {a: 1}, z: 1}
+var spawner = require('json-spawner')
+var chance = require('chance').Chance()
+
+var spawn = spawner(chance)
+spawn('id:guid,profile(name,age,twitter,city,country)')
+
+/* returns
+   { id: 'b09a25ea-a251-5d6e-9225-e4fe56215368',
+     profile:
+       { name: 'Milton Taylor',
+         age: 50,
+         twitter: '@vevcohaf',
+         city: 'Ekpithi',
+         country: 'TJ' } }
+*/
 ```
 
-The main difference between JSONPath / JSONSelect and this engine is that JSON Mask 
-**preserves the structure of the original input object**.
-Instead of returning an array of selected sub-elements (e.g. `[{a: 1}, {z: 1}]` from example above), 
-it filters-out the parts of the object that you don't need, 
-keeping the structure unchanged: `{p: {a: 1}, z: 1}`.
+## Installation
 
-This is important because JSON Mask was designed with HTTP resources in mind, 
-the structure of which I didn't want to change after the unwanted fields
-were masked / filtered.
-
-If you've used the Google APIs, and provided a `?fields=` query-string to get a
-[Partial Response](https://developers.google.com/+/api/#partial-responses), you've
-already used this language. The desire to have partial responses in
-my own Node.js-based HTTP services was the reason I wrote JSON Mask.
-
-*For [express](http://expressjs.com/) users, there's an
-[express-partial-response](https://github.com/nemtsov/express-partial-response) middleware.
-It will integrate with your existing services with no additional code 
-if you're using `res.json()` or `res.jsonp()`. And if you're already using [koa](https://github.com/koajs/koa.git)
-check out the [koa-json-mask](https://github.com/nemtsov/koa-json-mask) middleware.*
-
-This library has no dependencies. It works in Node as well as in the browser:
-
-[![browser support](https://ci.testling.com/nemtsov/json-mask.png)](https://ci.testling.com/nemtsov/json-mask)
-
-**Note:** the 1.5KB (gz), or 4KB (uncompressed) browser build is in the `/build` folder.
-
-## Syntax
-
-The syntax is loosely based on XPath:
-
-- ` a,b,c` comma-separated list will select multiple fields
-- ` a/b/c` path will select a field from its parent
-- `a(b,c)` sub-selection will select many fields from a parent
-- ` a/*/c` the star `*` wildcard will select all items in a field
-
-Take a look at `test/index-test.js` for examples of all of these and more.
-
-
-## Grammar
-
-```
-  Props ::= Prop | Prop "," Props
-   Prop ::= Object | Array
- Object ::= NAME | NAME "/" Object
-  Array ::= NAME "(" Props ")"
-   NAME ::= ? all visible characters ?
-```
-
-
-
-## Examples
-
-Identify the fields you want to keep:
-```js
-var fields = 'url,object(content,attachments/url)'
-```
-
-From this sample object:
-```js
-var originalObj = {
-  id: 'z12gtjhq3qn2xxl2o224exwiqruvtda0i',
-  url: 'https://plus.google.com/102817283354809142195/posts/F97fqZwJESL',
-  object: {
-    objectType: 'note',
-    content: 'A picture... of a space ship... launched from earth 40 years ago.',
-    attachments: [{
-      objectType: 'image',
-      url: 'http://apod.nasa.gov/apod/ap110908.html',
-      image: {height: 284, width: 506}
-    }]
-  },
-  provider: {title: 'Google+'}
-}
-```
-
-Here's what you'll get back:
-```js
-var expectObj = {
-  url: 'https://plus.google.com/102817283354809142195/posts/F97fqZwJESL',
-  object: {
-    content: 'A picture... of a space ship... launched from earth 40 years ago.',
-    attachments: [{
-      url: 'http://apod.nasa.gov/apod/ap110908.html'
-    }]
-  }
-}
-```
-
-Let's test that:
-```js
-var mask = require('json-mask')
-  , assert = require('assert')
-  , maskedObj
-
-maskedObj = mask(originalObj, fields)
-
-assert.deepEqual(maskedObj, expectObj)
-```
-
-
-### Partial Responses Server Example
-
-Here's an example of using `json-mask` to implement the
-[Google API Partial Response](https://developers.google.com/+/api/#partial-responses)
-
-```js
-var http = require('http')
-  , url = require('url')
-  , mask = require('json-mask')
-  , server
-
-server = http.createServer(function (req, res) {
-  var fields = url.parse(req.url, true).query.fields
-    , data = {
-          firstName: 'Mohandas'
-        , lastName: 'Gandhi'
-        , aliases: [{
-              firstName: 'Mahatma'
-            , lastName: 'Gandhi'
-          }, {
-              firstName: 'Bapu'
-          }]
-      }
-  res.writeHead(200, {'Content-Type': 'application/json'})
-  res.end(JSON.stringify(mask(data, fields)))
-})
-
-server.listen(4000)
-```
-
-Let's test it:
 ```bash
-$ curl 'http://localhost:4000'
-{"firstName":"Mohandas","lastName":"Gandhi","aliases":[{"firstName":"Mahatma","lastName":"Gandhi"},{"firstName":"Bapu"}]}
-
-$ # Let's just get the first name
-$ curl 'http://localhost:4000?fields=lastName'
-{"lastName":"Gandhi"}
-
-$ # Now, let's just get the first names directly as well as from aliases
-$ curl 'http://localhost:4000?fields=firstName,aliases(firstName)'
-{"firstName":"Mohandas","aliases":[{"firstName":"Mahatma"},{"firstName":"Bapu"}]}
+$ npm install json-spawn
 ```
 
-**Note:** a few more examples are in the `/example` folder.
+## Quick Start
 
+### Spawning objects
 
-CDN
----
+```js
+var spawner = require('json-spawn')
+var spawn = spawner(/* your generator */)
+```
 
-**jsDelivr**
-  - `//cdn.jsdelivr.net/jsonmask/0.3.4/jsonMask.js`
-  - `//cdn.jsdelivr.net/jsonmask/0.3.4/jsonMask.min.js`
+A **generator** is any object exposing a set of methods that will be used for populating the fields in the JSON object.
 
+A nice example of a generator is [Chance](http://chancejs.com/), the super cool library for random data of any type. Chance lets you do
 
-Bower
------
+```js
+chance.name() // 'Shane Chandler'
+chance.mont() // 'December'
+chance.ssn()  // '868-56-5059'
+```
 
-`bower install json-mask`
+Let's use Chance as our generator for spawning JSON objects:
 
+```js
+var chance = require('chance').Chance()
+var spawn = spawner(chance)
+```
 
-License
--------
+That's it, now you are ready for generating objects by passing some queries to the `spawn` function! If you ever used some of the Google APIs in the past, the syntax will look familiar.
+
+```js
+var address = spawn('address,city,state,zip,geo/coordinates')
+
+// { address: '1262 Tefi Grove',
+//   city: 'Lilafem',
+//   state: 'CO',
+//   zip: '27328',
+//   geo: { coordinates: '19.2724, 164.16494' } }
+```
+
+What spawn does is to inspect each field in the query, looking for a method with the same name in the generator object.
+
+For more information about the Partial Response query syntax, check out the [documentation page](https://developers.google.com/+/web/api/rest/#partial-responses).
+
+### Serving spawned objects from an API
+
+It's easy to integrate JSON Spawn with Express:
+
+```js
+app.get('/api/*', function (req, res) {
+	res.status(200).json(spawn(req.query.fields))
+})
+```
+
+There you go. Now you have a full-mocked API that you can use while writing your client app.
+
+## Advanced syntax
+
+```js
+spawn('hashtag{3}')
+
+// { hashtag: [ '#nocnata', '#omfimore', '#ot' ] }
+```
+```js
+spawn('folderId:guid,name:word,readOnly:bool')
+
+// { folderId: '4c52b585-37a0-540a-84fa-083c30e71a96',
+//   name: 'wusgo',
+//   readOnly: false }
+```
+```js
+spawn('friends(name,birthday,link:url)')
+
+// { friends:
+//   { name: 'Winnie Copeland',
+//     birthday: Tue Feb 10 1953 01:38:13 GMT-0300 (ART),
+//     link: 'http://lut.edu/bil' } }
+```
+```js
+spawn('friends{1}(name,birthday,link:url)')
+
+// { friends:
+//   [ { name: 'Hulda Conner',
+//       birthday: Wed May 18 1955 06:14:41 GMT-0300 (ART),
+//       link: 'http://le.org/se' } ] }
+```
+```js
+spawn('friends{0}(name,birthday,link:url)')
+
+// { friends: [] }
+```
+
+## Pending features
+
+* Parameters in generators *(perhaps something like* `x:word{length:5}`*?)*
+* Implementation of `*`
+
+## Tests
+
+```bash
+$ npm test     // Runs tests with Mocha
+$ npm test-cov // Runs coverage report with Istanbul
+```
+
+## Credits
+
+Thanks to [@nemtsov](https://github.com/nemtsov) for his [JSON Mask](https://github.com/nemtsov/json-mask) library, which is pretty much the base of this work.
+
+## License
 
 [MIT](/LICENSE)

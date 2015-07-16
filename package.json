@@ -1,30 +1,30 @@
 {
-  "name": "json-mask",
-  "version": "0.3.4",
-  "description": "Tiny language and engine for selecting specific parts of a JS object, hiding the rest.",
+  "name": "json-spawn",
+  "version": "0.1.0",
+  "description": "JS object-spawner based on json-mask.",
   "main": "lib/index",
   "scripts": {
     "test": "mocha",
     "test-watch": "mocha -w -G -R min",
     "test-cov": "istanbul cover _mocha",
     "build-browser": "npm run-script _build-browser-full; npm run-script _build-browser-license; npm run-script _build-browser-min",
-    "_build-browser-full": "browserify -s jsonMask -e lib/index.js | sed -e \"s/\\[ *'.*' *\\]/;/\" > build/jsonMask.js",
-    "_build-browser-license": "cat build/copyright  | cat - build/jsonMask.js  | tee build/jsonMask.js",
-    "_build-browser-min": "cat build/jsonMask.js | uglifyjs --comments > build/jsonMask.min.js"
+    "_build-browser-full": "browserify -s jsonSpawn -e lib/index.js | sed -e \"s/\\[ *'.*' *\\]/;/\" > build/json-spawn.js",
+    "_build-browser-license": "cat build/copyright  | cat - build/json-spawn.js  | tee build/json-spawn.js",
+    "_build-browser-min": "cat build/json-spawn.js | uglifyjs --comments > build/json-spawn.min.js"
   },
   "keywords": [
-    "mask",
-    "filter",
-    "select",
+    "mock",
+    "generator",
     "fields",
     "projection",
     "query",
     "json"
   ],
-  "author": "nemtsov@gmail.com",
+  "author": "lfarzati@gmail.com",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^10.2.6",
+    "deep-eql": "^0.1.3",
     "istanbul": "^0.3.17",
     "mocha": "~1.12.0",
     "uglifyjs": "^2.4.10"
@@ -48,6 +48,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/nemtsov/json-mask.git"
+    "url": "git://github.com/luisfarzati/json-spawn.git"
+  },
+  "dependencies": {
+    "json-mask": "^0.3.4"
   }
 }
