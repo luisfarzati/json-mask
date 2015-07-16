@@ -4,7 +4,7 @@
 Create JSON objects using the [Partial Response](https://developers.google.com/+/web/api/rest/#partial-responses) query language.
 
 ```js
-var spawner = require('json-spawner')
+var spawner = require('json-spawn')
 var chance = require('chance').Chance()
 
 var spawn = spawner(chance)
