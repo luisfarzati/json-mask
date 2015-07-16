@@ -37,7 +37,7 @@ var spawn = spawner(/* your generator */)
 
 A **generator** is any object exposing a set of methods that will be used for populating the fields in the JSON object.
 
-A nice example of a generator is [Chance](http://chancejs.com/), the super cool library for random data of any type. Chance lets you do
+A nice example of a generator is [Chance.js](http://chancejs.com/), the super cool library for random data of any type. Chance lets you do
 
 ```js
 chance.name() // 'Shane Chandler'
@@ -45,7 +45,7 @@ chance.mont() // 'December'
 chance.ssn()  // '868-56-5059'
 ```
 
-Let's use Chance as our generator for spawning JSON objects:
+Let's use Chance.js as our generator for spawning JSON objects:
 
 ```js
 var chance = require('chance').Chance()
