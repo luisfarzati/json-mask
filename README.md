@@ -10,15 +10,14 @@ var chance = require('chance').Chance()
 var spawn = spawner(chance)
 spawn('id:guid,profile(name,age,twitter,city,country)')
 
-/* returns
-   { id: 'b09a25ea-a251-5d6e-9225-e4fe56215368',
-     profile:
-       { name: 'Milton Taylor',
-         age: 50,
-         twitter: '@vevcohaf',
-         city: 'Ekpithi',
-         country: 'TJ' } }
-*/
+// returns
+//   { id: 'b09a25ea-a251-5d6e-9225-e4fe56215368',
+//     profile:
+//       { name: 'Milton Taylor',
+//         age: 50,
+//         twitter: '@vevcohaf',
+//         city: 'Ekpithi',
+//         country: 'TJ' } }
 ```
 
 ## Installation
@@ -125,8 +124,8 @@ spawn('friends{0}(name,birthday,link:url)')
 ## Tests
 
 ```bash
-$ npm test     // Runs tests with Mocha
-$ npm test-cov // Runs coverage report with Istanbul
+$ npm test          // Runs tests with Mocha
+$ npm run test-cov  // Runs coverage report with Istanbul
 ```
 
 ## Credits
